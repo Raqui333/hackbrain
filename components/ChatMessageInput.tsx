@@ -1,96 +1,52 @@
-import { ArrowUp } from 'lucide-react';
-import { Button } from './ui/button';
-import { Card, CardContent } from './ui/card';
-import { Textarea } from './ui/textarea';
-import { Dispatch, SetStateAction, useRef, useState } from 'react';
+import { ArrowUp } from 'lucide-react'
+import { Button } from './ui/button'
+import { Card, CardContent } from './ui/card'
+import { Textarea } from './ui/textarea'
+import { useRef, useState } from 'react'
+
+import { ChatStatus } from 'ai'
 
 interface ChatInputProps {
-  setLoading: Dispatch<SetStateAction<boolean>>;
-  setMessages: Dispatch<SetStateAction<AgentMessage[]>>;
+  onSubmit: (input: string) => void
+  status: ChatStatus
 }
 
-export default function ChatMessageInput({
-  setLoading,
-  setMessages,
-}: ChatInputProps) {
-  const [message, setMessage] = useState('');
+export default function ChatMessageInput({ onSubmit, status }: ChatInputProps) {
+  const [input, setInput] = useState('')
 
-  const sendButtonRef = useRef<HTMLButtonElement>(null);
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
-  const addMessage = (
-    message: Omit<UserMessage, 'id'> | Omit<BotMessage, 'id'>
-  ) => {
-    setMessages((prev) => [
-      ...prev,
-      { ...message, id: (prev.length + 1).toString() },
-    ]);
-  };
+  const sendButtonRef = useRef<HTMLButtonElement>(null)
+  const textAreaRef = useRef<HTMLTextAreaElement>(null)
 
   const handleSubmit = async () => {
-    if (!message.trim()) return;
+    if (!input.trim()) return
+    textAreaRef.current?.blur()
+    onSubmit(input)
+    setInput('')
+  }
 
-    textAreaRef.current?.blur();
-
-    addMessage({ type: 'user', content: message });
-    setMessage('');
-    setLoading(true);
-
-    try {
-      const response = await fetch('/api/agent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text: message }),
-      });
-
-      if (!response.ok) {
-        setLoading(false);
-        throw new Error('Erro ao enviar mensagem');
-      }
-
-      const data = await response.json();
-
-      addMessage({
-        type: 'bot',
-        content: data.text,
-        thinkingTime: data.thinkingTime,
-        error: false,
-      });
-    } catch (error) {
-      addMessage({
-        type: 'bot',
-        content:
-          'Desculpe, ocorreu um erro ao processar sua solicitação. Por favor, tente novamente.',
-        error: true,
-        thinkingTime: 0,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const disabled = status === 'streaming' || status === 'submitted'
 
   return (
     <Card className="bg-white/4 border-white/10 w-full max-w-4xl mx-auto my-10 p-4 gap-0">
       <CardContent className="p-0">
         <div className="flex items-center gap-2">
           <Textarea
+            disabled={disabled}
             ref={textAreaRef}
             placeholder="Digite sua pergunta ou peça uma explicação..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
             className="resize-none border-0 !bg-transparent focus-visible:ring-0 placeholder:text-muted-foreground/70 CustomScrollbar p-0"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendButtonRef.current?.click();
+                e.preventDefault()
+                sendButtonRef.current?.click()
               }
             }}
           />
           <Button
             ref={sendButtonRef}
-            disabled={!message.trim()}
+            disabled={!input.trim() || disabled}
             className="h-8 w-8 text-gray-700 bg-white hover:bg-white/80 disabled:bg-white/20 disabled:border-1 border-white/20 disabled:text-white/50"
             onClick={handleSubmit}
           >
@@ -99,5 +55,5 @@ export default function ChatMessageInput({
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

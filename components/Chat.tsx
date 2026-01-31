@@ -1,19 +1,48 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react'
 
-import ChatTextArea from './ChatTextArea';
-import ChatMessageInput from './ChatMessageInput';
-import Logo from './Logo';
+import ChatTextArea from './ChatTextArea'
+import ChatMessageInput from './ChatMessageInput'
+import Logo from './Logo'
+
+import { useChat } from '@ai-sdk/react'
+import { DefaultChatTransport } from 'ai'
 
 export default function Chat() {
-  const [messages, setMessages] = useState<AgentMessage[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const lastScrollTimeRef = useRef(0)
+
+  const { messages, sendMessage, status } = useChat({
+    transport: new DefaultChatTransport({
+      api: '/api/agent',
+    }),
+    experimental_throttle: 100,
+  })
 
   useEffect(() => {
-    if (scrollRef.current)
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [messages]);
+    if (status === 'streaming' || status === 'submitted') {
+      scrollToBottom()
+    }
+  }, [status, messages])
+
+  const onSubmit = (input: string) => {
+    sendMessage({ text: input })
+  }
+
+  const scrollToBottom = useCallback(() => {
+    const now = Date.now()
+
+    if (now - lastScrollTimeRef.current < 100) {
+      return
+    }
+
+    lastScrollTimeRef.current = now
+
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    }
+  }, [])
 
   return (
     <div className="flex-1 flex flex-col justify-center h-screen overflow-hidden">
@@ -22,7 +51,7 @@ export default function Chat() {
           ref={scrollRef}
           className="flex-1 overflow-y-auto CustomScrollbar transition-opacity duration-300 ease-in-out"
         >
-          <ChatTextArea messages={messages} loading={loading} />
+          <ChatTextArea messages={messages} status={status} />
         </div>
       ) : (
         <div className="flex items-center justify-center my-5">
@@ -31,8 +60,8 @@ export default function Chat() {
       )}
 
       <div className={loading ? 'pointer-events-none opacity-50' : ''}>
-        <ChatMessageInput setLoading={setLoading} setMessages={setMessages} />
+        <ChatMessageInput onSubmit={onSubmit} status={status} />
       </div>
     </div>
-  );
+  )
 }
