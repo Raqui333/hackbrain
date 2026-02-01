@@ -4,14 +4,11 @@ import { Card, CardContent } from './ui/card'
 import { Textarea } from './ui/textarea'
 import { useRef, useState } from 'react'
 
-import { ChatStatus } from 'ai'
-
 interface ChatInputProps {
   onSubmit: (input: string) => void
-  status: ChatStatus
 }
 
-export default function ChatMessageInput({ onSubmit, status }: ChatInputProps) {
+ export default function ChatMessageInput({ onSubmit}: ChatInputProps) {
   const [input, setInput] = useState('')
 
   const sendButtonRef = useRef<HTMLButtonElement>(null)
@@ -24,14 +21,11 @@ export default function ChatMessageInput({ onSubmit, status }: ChatInputProps) {
     setInput('')
   }
 
-  const disabled = status === 'streaming' || status === 'submitted'
-
   return (
     <Card className="bg-white/4 border-white/10 w-full max-w-4xl mx-auto my-10 p-4 gap-0">
       <CardContent className="p-0">
         <div className="flex items-center gap-2">
           <Textarea
-            disabled={disabled}
             ref={textAreaRef}
             placeholder="Digite sua pergunta ou peça uma explicação..."
             value={input}
@@ -46,7 +40,7 @@ export default function ChatMessageInput({ onSubmit, status }: ChatInputProps) {
           />
           <Button
             ref={sendButtonRef}
-            disabled={!input.trim() || disabled}
+            disabled={!input.trim()}
             className="h-8 w-8 text-gray-700 bg-white hover:bg-white/80 disabled:bg-white/20 disabled:border-1 border-white/20 disabled:text-white/50"
             onClick={handleSubmit}
           >

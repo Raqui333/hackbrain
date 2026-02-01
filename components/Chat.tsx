@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import ChatTextArea from './ChatTextArea'
 import ChatMessageInput from './ChatMessageInput'
@@ -8,8 +8,6 @@ import { useChat } from '@ai-sdk/react'
 import { DefaultChatTransport } from 'ai'
 
 export default function Chat() {
-  const [loading, setLoading] = useState(false)
-
   const scrollRef = useRef<HTMLDivElement>(null)
   const lastScrollTimeRef = useRef(0)
 
@@ -33,7 +31,7 @@ export default function Chat() {
   const scrollToBottom = useCallback(() => {
     const now = Date.now()
 
-    if (now - lastScrollTimeRef.current < 100) {
+    if (now - lastScrollTimeRef.current < 30) {
       return
     }
 
@@ -43,6 +41,12 @@ export default function Chat() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
   }, [])
+
+  if (status === 'ready') {
+    console.log(messages)
+  }
+
+  const disabled = status === 'streaming' || status === 'submitted'
 
   return (
     <div className="flex-1 flex flex-col justify-center h-screen overflow-hidden">
@@ -59,8 +63,8 @@ export default function Chat() {
         </div>
       )}
 
-      <div className={loading ? 'pointer-events-none opacity-50' : ''}>
-        <ChatMessageInput onSubmit={onSubmit} status={status} />
+      <div className={disabled ? 'pointer-events-none opacity-50' : ''}>
+        <ChatMessageInput onSubmit={onSubmit} />
       </div>
     </div>
   )
