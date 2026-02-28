@@ -1,6 +1,10 @@
 # Hack Brain – AI-powered Study Assistant Chatbot
 
-**Hack Brain** is an **AI-powered study assistant** designed to help students **organize their learning materials** and **study more efficiently**. The project leverages a **custom Retrieval-Augmented Generation (RAG) pipeline** combined with **LangGraph orchestration**, enabling automated reasoning workflows and more reliable responses. Users can upload and manage their own study resources such as **books, articles, notes, and text documents**, allowing the chatbot to generate **context-aware and personalized answers**.
+**Hack Brain** is an **AI-powered study assistant** designed to help students **organize their learning materials** and **study more efficiently**.
+
+The project leverages a **custom Retrieval-Augmented Generation (RAG) pipeline** combined with **LangGraph orchestration**, enabling automated reasoning workflows and more reliable responses.
+
+Users can upload and manage their own study resources such as **books, articles, notes, and text documents**, allowing the chatbot to generate **context-aware and personalized answers**.
 
 ![Main Page Screenshot](/docs/main_page_screenshot.png)
 
