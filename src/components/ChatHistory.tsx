@@ -4,52 +4,43 @@ import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
 import 'highlight.js/styles/github-dark.css'
 
-import { UIMessage, ChatStatus } from 'ai'
 import CodeBlock from './CustomMarkdownElements/codeblock'
+import React from 'react'
 
 interface ChatTextAreaProps {
-  messages: UIMessage[]
-  status: ChatStatus
+  history: any[]
 }
 
-export default function ChatTextArea({ messages, status }: ChatTextAreaProps) {
+function ChatHistory({ history }: ChatTextAreaProps) {
   return (
     <div className="p-6">
       <div className="max-w-3xl mx-auto space-y-6">
-        {messages.map((message) => {
-          const assistantMarkdown = message.parts
-            .filter((part) => part.type === 'text')
-            .map((part) => part.text)
-            .join(' ')
-
+        {history.map((message) => {
           return (
-            <div key={message.id} className="whitespace-pre-wrap">
-              {message.role === 'user' && (
+            <div key={message.kwargs.id} className="whitespace-pre-wrap">
+              {message.id.includes('HumanMessage') && (
                 <div className="bg-white/5 border border-white/10 p-4 rounded-2xl rounded-br-sm ml-auto w-fit">
-                  <p className="text-foreground text-right">
-                    {message.parts.map((part) => (part.type === 'text' ? part.text : ''))}
-                  </p>
+                  <p className="text-foreground text-right">{message.kwargs.content}</p>
                 </div>
               )}
 
-              {message.role === 'assistant' && (
+              {message.id.some((part: string) => part.includes('AIMessage')) && (
                 <div className="text-foreground break-words">
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     rehypePlugins={[rehypeHighlight]}
                     components={{ code: CodeBlock }}
                   >
-                    {assistantMarkdown}
+                    {message.kwargs.content}
                   </ReactMarkdown>
                 </div>
               )}
             </div>
           )
         })}
-
-        {/* Loading Indicator */}
-        <Circle size={20} className={status === 'submitted' ? 'animate-pulse text-blue-500' : 'opacity-0'} />
       </div>
     </div>
   )
 }
+
+export default React.memo(ChatHistory)
