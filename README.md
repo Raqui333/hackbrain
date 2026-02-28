@@ -1,8 +1,6 @@
 # Hack Brain – AI-powered Study Assistant Chatbot
 
-**Hack Brain** is an **AI-powered study assistant** designed to help students **organize their learning materials** and **study more efficiently**. The project leverages a **custom Retrieval-Augmented Generation (RAG) pipeline**, allowing users to upload and manage their own study resources such as **books, articles, notes, and text documents**.  
-
-With this approach, the chatbot can provide **personalized answers** and assist in creating a more **structured and adaptive study process**.
+**Hack Brain** is an **AI-powered study assistant** designed to help students **organize their learning materials** and **study more efficiently**. The project leverages a **custom Retrieval-Augmented Generation (RAG) pipeline** combined with **LangGraph orchestration**, enabling automated reasoning workflows and more reliable responses. Users can upload and manage their own study resources such as **books, articles, notes, and text documents**, allowing the chatbot to generate **context-aware and personalized answers**.
 
 ![Main Page Screenshot](/docs/main_page_screenshot.png)
 
@@ -12,19 +10,31 @@ With this approach, the chatbot can provide **personalized answers** and assist 
 
 ## Features
 
-- **AI Chatbot** powered by Gemini for intelligent responses.  
-- **Custom content ingestion** – add your own books, notes, articles, or any text.  
-- **Semantic search** using Pinecone as the vector database.  
-- **RAG pipeline** tailored for efficient knowledge retrieval.  
-- Built with **Next.js** for a modern and scalable web experience.  
+- **AI Chatbot with multi-model support**
+  - OpenAI
+  - Google (Gemini)
+  - Local models via Ollama
+- **LangGraph-powered agent orchestration** for structured reasoning and automated workflows
+- **Custom content ingestion** – upload books, notes, articles, or text files
+- **Semantic search** powered by Pinecone
+- **Custom RAG pipeline** optimized for study material retrieval
+- **Modern fullstack architecture with Next.js**
 
 ---
 
-## Tech Stack
+# Tech Stack
 
-- **Frontend & Backend**: [Next.js](https://nextjs.org/)  
-- **AI Model**: [Gemini API](https://ai.google.dev/)  
-- **Vector Database**: [Pinecone](https://www.pinecone.io/)  
+**Framework**
+- [Next.js](https://nextjs.org/)
+
+**AI & Agent Orchestration**
+- [LangGraph](https://www.langchain.com/langgraph)
+- OpenAI
+- Google Gemini
+- Ollama (local models)
+
+**Vector Database**
+- [Pinecone](https://www.pinecone.io/) 
 
 ---
 
@@ -45,9 +55,17 @@ npm install
 Create a `.env` file in the root directory and add the following:
 
 ```env
-GEMINI_API_KEY=your_gemini_api_key
-PINECONE_API_KEY=your_pinecone_api_key
-PINECONE_INDEX_NAME=your_pinecone_index_name
+OPENAI_API_KEY=your_gemini_key_here
+GOOGLE_API_KEY=your_api_key
+
+OLLAMA_MODEL="gemma3:1b"
+OPENAI_MODEL="gpt-4o-mini"
+GOOGLE_MODEL="gemini-2.5-flash"
+
+DEFAULT_MODEL="gemma3:1b"
+
+PINECONE_API_KEY=your_pinecone_key_here
+PINECONE_INDEX_NAME=your_pinecone_index_name_here
 ```
 
 ### 4. Run the development server
