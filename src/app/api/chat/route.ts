@@ -3,6 +3,8 @@ import { SYSTEM_PROMPT } from '@/src/lib/agents/assistant/system-prompt'
 import { HumanMessage } from '@langchain/core/messages'
 import { createAssistantGraph } from '@/src/lib/agents/assistant/graph'
 
+const DEFAULT_MODEL = process.env.DEFAULT_MODEL || 'gemma3:1b'
+
 export async function POST(request: NextRequest) {
   try {
     const { history, message } = await request.json()
@@ -23,7 +25,7 @@ export async function POST(request: NextRequest) {
             streamMode: ['messages', 'values'],
             context: {
               SYSTEM_PROMPT,
-              model: 'gemma3:1b',
+              model: DEFAULT_MODEL,
             },
           },
         )
