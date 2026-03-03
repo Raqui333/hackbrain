@@ -15,7 +15,7 @@ export default function Logo({ variant }: LogoProps) {
             <Sparkles className="absolute -top-4 -right-4 h-8 w-8 text-blue-300 animate-pulse" />
           </div>
           <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
-            Brain Hack
+            Hack Brain
           </h1>
         </>
       ) : (
@@ -27,7 +27,7 @@ export default function Logo({ variant }: LogoProps) {
           </div>
           <div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
-              Brain Hack
+              Hack Brain
             </h1>
             <p className="text-xs text-muted-foreground">Seu Segundo Cérebro</p>
           </div>

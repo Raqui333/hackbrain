@@ -8,7 +8,7 @@ import React from 'react'
 
 function StreamingMessage({ message }: { message: string }) {
   return (
-    <div className="max-w-3xl mx-auto space-y-6 whitespace-pre-wrap text-foreground break-words">
+    <div className="max-w-3xl mx-auto space-y-6 text-foreground break-words CustomMarkdown">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
