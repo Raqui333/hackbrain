@@ -7,13 +7,14 @@ import CodeBlock from './CustomMarkdownElements/codeblock'
 import React from 'react'
 
 import { Message } from '../hooks/use-chat'
+import { GenericToolFeedback } from './CustomToolElements/GenericToolFeedback'
+import { SearchToolResult } from './CustomToolElements/SearchToolResult'
 
 interface ChatTextAreaProps {
   history: Message[]
 }
 
 function ChatHistory({ history }: ChatTextAreaProps) {
-  console.log(history)
   return (
     <div className="p-6">
       <div className="max-w-3xl mx-auto space-y-6">
@@ -24,6 +25,14 @@ function ChatHistory({ history }: ChatTextAreaProps) {
                 <div className="bg-white/5 border border-white/10 p-4 rounded-2xl rounded-br-sm ml-auto w-fit">
                   <p className="text-foreground text-right">{message.content}</p>
                 </div>
+              )}
+
+              {message.type === 'Tool' && message.tool_name === 'tavily_search' && (
+                <SearchToolResult data={message.content} />
+              )}
+
+              {message.type === 'Tool' && message.tool_name === 'retrieval_tool' && (
+                <GenericToolFeedback toolName="Consulta Interna Realizada" description="A IA realizou uma busca de informações nos documentos enviados pelo usuário." />
               )}
 
               {message.type === 'System' && (
