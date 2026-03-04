@@ -16,14 +16,14 @@ const styleSelected =
   'w-full justify-start gap-3 h-12 text-left bg-blue-500/10 text-blue-400 hover:text-white border border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/30';
 
 const styleDefault =
-  'w-full justify-start gap-3 h-12 text-left hover:bg-white/5 hover:text-blue-400';
+  'w-full justify-start gap-3 h-12 text-left hover:bg-white/5 hover:text-white';
 
 export default function Sidebar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <div
-      className={`fixed inset-y-0 left-0 z-50 w-64 bg-card/95 border-r border-white/20 ${
+      className={`fixed inset-y-0 left-0 z-50 w-64 bg-card/95 border-r border-white/5 ${
         isMenuOpen ? 'translate-x-0' : '-translate-x-full'
       } lg:translate-x-0 lg:static lg:inset-0`}
     >

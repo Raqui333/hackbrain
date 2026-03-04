@@ -8,7 +8,7 @@ export default function Logo({ variant }: LogoProps) {
   return (
     <div className="flex items-center gap-3">
       {variant === 'large' ? (
-        <>
+        <div className="flex gap-3 justify-center items-center mb-10">
           <div className="relative">
             <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-lg animate-pulse"></div>
             <Brain className="relative h-16 w-16 text-blue-400" />
@@ -17,7 +17,7 @@ export default function Logo({ variant }: LogoProps) {
           <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
             Hack Brain
           </h1>
-        </>
+        </div>
       ) : (
         <>
           <div className="relative">
