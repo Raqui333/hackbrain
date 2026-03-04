@@ -32,7 +32,10 @@ function ChatHistory({ history }: ChatTextAreaProps) {
               )}
 
               {message.type === 'Tool' && message.tool_name === 'retrieval_tool' && (
-                <GenericToolFeedback toolName="Consulta Interna Realizada" description="A IA realizou uma busca de informações nos documentos enviados pelo usuário." />
+                <GenericToolFeedback
+                  toolName="Consulta Interna Realizada"
+                  description="A IA realizou uma busca de informações nos documentos enviados pelo usuário."
+                />
               )}
 
               {message.type === 'System' && (
