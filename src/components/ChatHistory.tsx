@@ -28,7 +28,16 @@ function ChatHistory({ history }: ChatTextAreaProps) {
               )}
 
               {message.type === 'Tool' && message.tool_name === 'tavily_search' && (
-                <SearchToolResult data={message.content} />
+                <div className="flex flex-col gap-3">
+                  <GenericToolFeedback
+                    toolName="Busca na Internet"
+                    description="A IA realizou uma busca online por fontes públicas e atualizadas."
+                  />
+
+                  <div className="px-5">
+                  <SearchToolResult data={message.content} />
+                  </div>
+                </div>
               )}
 
               {message.type === 'Tool' && message.tool_name === 'retrieval_tool' && (

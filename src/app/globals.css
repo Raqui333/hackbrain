@@ -162,11 +162,11 @@
   }
 
   .CustomMarkdown ul > li {
-    @apply list-disc mb-4;
+    @apply list-disc list-inside pl-2 mb-1;
   }
 
   .CustomMarkdown ol > li {
-    @apply list-decimal mb-4;
+    @apply list-decimal list-inside pl-2 mb-1;
   }
 
   .CustomMarkdown blockquote {

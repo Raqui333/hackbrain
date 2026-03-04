@@ -23,7 +23,7 @@ export function SearchToolResult({ data, initialVisible = 3 }: SearchToolResultP
         <div className="flex justify-center items-center bg-blue-500/20 border border-blue-500/20 w-6 h-6 rounded-full text-xs text-blue-300">
           {results.length}
         </div>
-        <p className="font-medium">Resultados da Busca</p>
+        <p className="font-medium">Resultados de Busca</p>
       </div>
       <div className={cn('flex gap-3 w-full', isExpanded && 'flex-col')}>
         {visibleResults.map((result: { url: string; title: string; content: string }) => (
