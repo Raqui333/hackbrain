@@ -1,25 +1,17 @@
-import {
-  Brain,
-  FileText,
-  Plus,
-  Search,
-  Settings,
-  Sparkles,
-  Upload,
-  User,
-} from 'lucide-react';
-import { Button } from './ui/button';
-import { useState } from 'react';
-import Logo from './Logo';
+'use client'
+
+import { Brain, FileText, Settings, User } from 'lucide-react'
+import { Button } from './ui/button'
+import { useState } from 'react'
+import { Logo } from './Logo'
 
 const styleSelected =
-  'w-full justify-start gap-3 h-12 text-left bg-blue-500/10 text-blue-400 hover:text-white border border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/30';
+  'w-full justify-start gap-3 h-12 text-left bg-blue-500/10 text-blue-400 hover:text-white border border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/30'
 
-const styleDefault =
-  'w-full justify-start gap-3 h-12 text-left hover:bg-white/5 hover:text-white';
+const styleDefault = 'w-full justify-start gap-3 h-12 text-left hover:bg-white/5 hover:text-white'
 
 export default function Sidebar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
     <div
@@ -59,5 +51,5 @@ export default function Sidebar() {
         </div>
       </div>
     </div>
-  );
+  )
 }
