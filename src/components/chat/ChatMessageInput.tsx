@@ -1,8 +1,8 @@
 import { ArrowUp } from 'lucide-react'
-import { Button } from './ui/button'
-import { Card, CardContent } from './ui/card'
-import { Textarea } from './ui/textarea'
-import { RefObject, useRef, useState } from 'react'
+import { Button } from '../ui/button'
+import { Card, CardContent } from '../ui/card'
+import { Textarea } from '../ui/textarea'
+import { useRef, useState } from 'react'
 
 interface ChatInputProps {
   onSubmit: (input: string) => void
@@ -10,7 +10,7 @@ interface ChatInputProps {
   stopStreaming: () => void
 }
 
-export default function ChatMessageInput({ onSubmit, streaming, stopStreaming }: ChatInputProps) {
+export function ChatMessageInput({ onSubmit, streaming, stopStreaming }: ChatInputProps) {
   const [input, setInput] = useState('')
 
   const sendButtonRef = useRef<HTMLButtonElement>(null)

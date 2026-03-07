@@ -3,12 +3,12 @@ import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
 import 'highlight.js/styles/github-dark.css'
 
-import CodeBlock from './CustomMarkdownElements/codeblock'
+import CodeBlock from '../CustomMarkdownElements/codeblock'
 import React from 'react'
 
-import { Message } from '../hooks/use-chat'
-import { GenericToolFeedback } from './CustomToolElements/GenericToolFeedback'
-import { SearchToolResult } from './CustomToolElements/SearchToolResult'
+import { Message } from '../../hooks/use-chat'
+import { GenericToolFeedback } from '../CustomToolElements/GenericToolFeedback'
+import { SearchToolResult } from '../CustomToolElements/SearchToolResult'
 
 interface ChatTextAreaProps {
   history: Message[]

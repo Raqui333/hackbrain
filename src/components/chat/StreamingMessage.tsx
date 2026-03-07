@@ -3,7 +3,7 @@ import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
 import 'highlight.js/styles/github-dark.css'
 
-import CodeBlock from './CustomMarkdownElements/codeblock'
+import CodeBlock from '../CustomMarkdownElements/codeblock'
 import React from 'react'
 
 function StreamingMessage({ message }: { message: string }) {

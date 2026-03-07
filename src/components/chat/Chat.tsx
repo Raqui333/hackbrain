@@ -2,16 +2,18 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import Logo from './Logo'
+import { Logo } from '../Logo'
+import { ChatMessageInput } from './ChatMessageInput'
+
 import ChatHistory from './ChatHistory'
 import StreamingMessage from './StreamingMessage'
-import ChatMessageInput from './ChatMessageInput'
 
-import { cn } from '../lib/utils'
+import { cn } from '../../lib/utils'
 import { ArrowDown } from 'lucide-react'
-import { useChat } from '../hooks/use-chat'
+import { useChat } from '../../hooks/use-chat'
+import { useRandomTitle } from '@/src/hooks/use-random-title'
 
-export default function Chat() {
+export function Chat() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
   const lastScrollTimeRef = useRef(0)
@@ -19,6 +21,8 @@ export default function Chat() {
   const [isAtBottom, setIsAtBottom] = useState<boolean>(true)
 
   const { history, currentMessage, sendMessage, isStreaming, stopStreaming } = useChat()
+
+  const { getRandomTitle } = useRandomTitle()
 
   useEffect(() => {
     const scrollContainer = scrollRef.current
@@ -67,7 +71,7 @@ export default function Chat() {
   )
 
   return (
-    <div className="flex-1 flex flex-col justify-center h-screen overflow-hidden">
+    <div className="relative flex-1 flex flex-col justify-center h-screen overflow-hidden">
       {history.length > 0 || currentMessage.length > 0 ? (
         <div
           ref={scrollRef}
@@ -85,7 +89,7 @@ export default function Chat() {
           <div ref={bottomRef} />
         </div>
       ) : (
-        <div className="flex items-center justify-center my-5">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-40">
           <Logo variant="large" />
         </div>
       )}
