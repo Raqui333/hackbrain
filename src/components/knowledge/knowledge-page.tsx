@@ -1,34 +1,40 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
-import {
-  Brain,
-  UploadCloud,
-  FileText,
-  X,
-  CheckCircle,
-  Loader2,
-  Download,
-  Eye,
-  Trash2,
-  ArchiveX,
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { CheckCircle, Loader2, Download, Eye, Trash2, ArchiveX } from 'lucide-react'
+import { useState } from 'react'
 import { Logo } from '../Logo'
+import { cn } from '@/lib/utils'
 
-interface UploadedFile {
-  id: string
-  name: string
-  size: number
-  status: 'uploading' | 'done' | 'error'
-  file: File
-  objectUrl: string
-}
+import type { UploadedFile } from './knowledge.types'
+import { DropZone } from './drop-zone'
 
 export function KnowledgePage() {
-  const [isDragging, setIsDragging] = useState(false)
   const [files, setFiles] = useState<UploadedFile[]>([])
-  const inputRef = useRef<HTMLInputElement>(null)
+
+  const uploadDocument = async (local_files: UploadedFile[]) => {
+    setFiles((prev) => [...prev, ...local_files])
+
+    const formData = new FormData()
+    local_files.forEach((file) => {
+      formData.append('files', file.file)
+    })
+
+    const response = await fetch('/api/embed', {
+      method: 'POST',
+      body: formData,
+    })
+
+    if (!response.ok) {
+      local_files.forEach((file) => {
+        setFiles((prev) => prev.map((f) => (f.id === file.id ? { ...f, status: 'error' } : f)))
+      })
+      return
+    }
+
+    local_files.forEach((file) => {
+      setFiles((prev) => prev.map((f) => (f.id === file.id ? { ...f, status: 'done' } : f)))
+    })
+  }
 
   const formatSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`
@@ -38,53 +44,8 @@ export function KnowledgePage() {
 
   const getFileIcon = (name: string) => {
     const ext = name.split('.').pop()?.toLowerCase()
-    return ext === 'pdf'
-      ? 'PDF'
-      : ext === 'docx' || ext === 'doc'
-        ? 'DOC'
-        : ext === 'txt'
-          ? 'TXT'
-          : ext === 'md'
-            ? 'MD'
-            : 'FILE'
+    return ext === 'pdf' ? 'PDF' : ext === 'txt' ? 'TXT' : ext === 'md' ? 'MD' : 'FILE'
   }
-
-  const addFiles = useCallback((newFiles: FileList | File[]) => {
-    const arr = Array.from(newFiles)
-    const mapped: UploadedFile[] = arr.map((f) => ({
-      id: `${f.name}-${Date.now()}-${Math.random()}`,
-      name: f.name,
-      size: f.size,
-      status: 'uploading',
-      file: f,
-      objectUrl: URL.createObjectURL(f),
-    }))
-    setFiles((prev) => [...prev, ...mapped])
-    mapped.forEach((file) => {
-      setTimeout(
-        () => {
-          setFiles((prev) => prev.map((f) => (f.id === file.id ? { ...f, status: 'done' } : f)))
-        },
-        1500 + Math.random() * 1000,
-      )
-    })
-  }, [])
-
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault()
-      setIsDragging(false)
-      if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files)
-    },
-    [addFiles],
-  )
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(true)
-  }
-
-  const handleDragLeave = () => setIsDragging(false)
 
   const removeFile = (id: string) => {
     setFiles((prev) => {
@@ -116,36 +77,7 @@ export function KnowledgePage() {
         <p className="text-muted-foreground text-sm -mt-4">Base de Conhecimento</p>
 
         {/* Drop Zone */}
-        <div
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onClick={() => inputRef.current?.click()}
-          className={cn(
-            'w-full rounded-xl border-2 border-dashed cursor-pointer transition-all duration-200 flex flex-col items-center justify-center gap-2 py-12 px-8',
-            isDragging
-              ? 'border-[#3b82f6] bg-[#1a2a4a]/40'
-              : 'border-[#2a2a3e] hover:border-[#3b82f6]/50 hover:bg-[#141428]',
-          )}
-        >
-          <div className="w-14 h-14 rounded-full bg-[#1a2a4a] flex items-center justify-center">
-            <UploadCloud className="w-7 h-7 text-[#3b82f6]" />
-          </div>
-          <div className="text-center">
-            <p className="text-white font-medium text-base">
-              Escolha um arquivo e arrate e solte aqui
-            </p>
-          </div>
-          <p className="text-muted-foreground text-xs">PDF, DOCX, TXT or MD, até 50 MB</p>
-          <input
-            ref={inputRef}
-            type="file"
-            multiple
-            accept=".pdf,.docx,.txt,.md"
-            className="hidden"
-            onChange={(e) => e.target.files && addFiles(e.target.files)}
-          />
-        </div>
+        <DropZone uploadDocument={uploadDocument} />
 
         {/* File List */}
         <div className="w-full flex flex-col gap-2">

@@ -1,44 +1,55 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { Pinecone } from '@pinecone-database/pinecone';
-import { v4 as uuidv4 } from 'uuid';
-import getEmbedContent from '@/lib/embeddings';
+import { EmbeddingService } from '@/src/service/embedding.service'
+import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf'
+import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters'
+import { NextRequest, NextResponse } from 'next/server'
 
-const pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY || '' });
-const index = pc.Index(process.env.PINECONE_INDEX_NAME || 'brainhack');
-
+// Lazy implementation
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const embeddingService = new EmbeddingService()
 
-    if (!body || !body.content || body.content.trim() === '') {
-      return new NextResponse('Erro: Conteúdo não fornecido ou vazio', {
-        status: 400,
-      });
+    const formData = await request.formData()
+    const files = formData.getAll('files') as File[]
+
+    const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 200 })
+
+    const docs = []
+    for (const file of files) {
+      const buffer = Buffer.from(await file.arrayBuffer())
+      const loader = new PDFLoader(new Blob([buffer]))
+      const loadedDocs = await loader.load()
+      docs.push(...loadedDocs)
     }
 
-    const vector: number[] = await getEmbedContent(body.content);
+    const chunks = await splitter.splitDocuments(docs)
 
-    await index.upsert([
-      {
-        id: uuidv4(),
-        values: vector,
-        metadata: { text: body.content },
-      },
-    ]);
+    for (const chunk of chunks) {
+      const formmattedContent = formatChunkForEmbedding(chunk)
 
-    return new NextResponse('Embedding gerado com sucesso!', {
+      const vector = await embeddingService.generateEmbedding(formmattedContent)
+      const id = crypto.randomUUID()
+
+      await embeddingService.upsertContentToPinecone(id, formmattedContent, vector)
+      console.log('[Embedding] Embedding document:', chunk.metadata.source)
+    }
+
+    return new NextResponse('All files embedded successfully', {
       status: 200,
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-    });
+    })
   } catch (error) {
-    console.error(error);
-    return new NextResponse('Erro ao processar a requisição', {
+    console.error(error)
+    return new NextResponse('Error while embedding your files', {
       status: 500,
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-    });
+    })
   }
+}
+
+function formatChunkForEmbedding(chunk: any) {
+  return `
+Source: ${chunk.metadata.source}
+Page: ${chunk.metadata.loc.pageNumber} of ${chunk.metadata.pdf.totalPages}
+
+Content:
+${chunk.pageContent}
+`
 }
