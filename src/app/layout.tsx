@@ -14,6 +14,9 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: 'Hack Brain - Seu Segundo Cérebro',
   description: 'Assistente de IA que aprende com seu conteúdo e potencializa seu aprendizado',
+  icons: {
+    icon: '/favicon.png'
+  }
 }
 
 export default function RootLayout({
