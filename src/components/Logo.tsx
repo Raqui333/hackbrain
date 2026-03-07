@@ -1,14 +1,14 @@
-import { Brain, Sparkles } from 'lucide-react';
+import { Brain, Sparkles } from 'lucide-react'
 
 interface LogoProps {
-  variant: 'large' | 'small';
+  variant: 'large' | 'small' | 'icon'
 }
 
-export default function Logo({ variant }: LogoProps) {
+export function Logo({ variant = 'large' }: LogoProps) {
   return (
     <div className="flex items-center gap-3">
       {variant === 'large' ? (
-        <div className="flex gap-3 justify-center items-center mb-10">
+        <div className="flex gap-3 justify-center items-center">
           <div className="relative">
             <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-lg animate-pulse"></div>
             <Brain className="relative h-16 w-16 text-blue-400" />
@@ -17,6 +17,12 @@ export default function Logo({ variant }: LogoProps) {
           <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
             Hack Brain
           </h1>
+        </div>
+      ) : variant === 'icon' ? (
+        <div className="relative">
+          <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-lg animate-pulse"></div>
+          <Brain className="relative h-16 w-16 text-blue-400" />
+          <Sparkles className="absolute -top-4 -right-4 h-8 w-8 text-blue-300 animate-pulse" />
         </div>
       ) : (
         <>
@@ -34,5 +40,5 @@ export default function Logo({ variant }: LogoProps) {
         </>
       )}
     </div>
-  );
+  )
 }
